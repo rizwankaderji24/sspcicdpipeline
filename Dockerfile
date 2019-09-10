@@ -7,10 +7,8 @@ RUN npm cache clean --force
 RUN npm install
 RUN npm install -g @angular/cli@7.3.9
 RUN npm run build --prod
-RUN chmod +x /usr/local/bin/uid_entrypoint.sh
-RUN chmod g=u /etc/passwd
-RUN ln -s /usr/local/bin/uid-entrypoint.sh  /
 ENTRYPOINT [ "sh", "-c", "/usr/local/bin/uid_entrypoint.sh" ]
+RUN docker build -t testimage
 USER 1001
 FROM nginx:stable
 RUN chgrp -R root /var/cache/nginx /var/run /var/log/nginx && \
