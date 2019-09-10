@@ -6,7 +6,6 @@ COPY uid_entrypoint.sh /usr/local/bin/
 RUN npm cache clean --force
 RUN npm install
 RUN npm install -g @angular/cli@7.3.9
-RUN npm run build --prod
 ENTRYPOINT [ "sh", "-c", "/usr/local/bin/uid_entrypoint.sh" ]
 RUN docker build -t testimage
 USER 1001
