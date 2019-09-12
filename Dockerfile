@@ -1,22 +1,34 @@
+
 # base image
 FROM node:alpine AS builder
 
 # set working directory
-WORKDIR /home/pravin/rogers
+WORKDIR /Jenkins/workspace/demoapp
 
-# add `/home/pravin/rogers/node_modules/.bin` to $PATH
-ENV PATH /home/pravin/rogers/node_modules/.bin:$PATH
+# add `/Jenkins/workspace/demoapp/node_modules/.bin` to $PATH
+ENV PATH /Jenkins/workspace/demoapp/node_modules/.bin:$PATH
 
 # install and cache app dependencies
-COPY package.json /home/pravin/rogers/package.json
+COPY package.json /Jenkins/workspace/demoapp/package.json
 RUN npm install
 RUN npm install -g @angular/cli@7.3.9
 
 # add app
-COPY . /home/pravin/rogers
+COPY . /Jenkins/workspace/demoapp
 
 # start app
 CMD ng serve --host 0.0.0.0
+
+
+
+
+
+
+
+
+
+
+
 
 
 
