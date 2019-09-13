@@ -1,6 +1,6 @@
 
 # base image
-FROM node:alpine AS builder
+FROM node:latest as node
 
 # set working directory
 WORKDIR /Jenkins/workspace/demoapp
