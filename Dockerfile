@@ -20,7 +20,7 @@ FROM nginx:stable
 
 RUN sed -i.bak 's/listen\(.*\)80;/listen 8091;/' /etc/nginx/conf.d/default.conf
 
-COPY --from=node /app/dist/angular-saml-poc /usr/share/nginx/html
+
 
 EXPOSE 8091
 
