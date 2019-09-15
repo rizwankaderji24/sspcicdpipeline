@@ -1,19 +1,29 @@
-# base image
 FROM node:latest as node
 
-# set working directory
-WORKDIR /var/lib/jenkins/workspace/ssp 
+WORKDIR /app
 
-# add `/var/lib/jenkins/workspace/ssp/node_modules/.bin` to $PATH
-ENV PATH /var/lib/jenkins/workspace/ssp/node_modules/.bin:$PATH
+COPY . .
 
-# install and cache app dependencies
-COPY package.json /var/lib/jenkins/workspace/ssp/package.json
+COPY package.json ./
+
+COPY uid_entrypoint.sh /usr/local/bin/
+
 RUN npm install
+
 RUN npm install -g @angular/cli@7.3.9
 
-# add app
-COPY . /var/lib/jenkins/workspace/ssp
+RUN npm run build --prod
 
-# start app
-CMD ng serve --host 0.0.0.0
+ENTRYPOINT [ "sh", "-c", "/usr/local/bin/uid_entrypoint.sh" ]
+
+FROM nginx:stable
+
+RUN sed -i.bak 's/listen\(.*\)80;/listen 8091;/' /etc/nginx/conf.d/default.conf
+
+COPY --from=node /app/dist/angular-saml-poc /usr/share/nginx/html
+
+EXPOSE 8091
+
+RUN sed -i.bak 's/^user/#user/' /etc/nginx/nginx.conf
+
+CMD ["nginx", "-g", "daemon off;"]
