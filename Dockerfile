@@ -1,29 +1,22 @@
+# base image
 FROM node:latest as node
 
-WORKDIR /app
+# set working directory
+WORKDIR /home/aarti/rogers 
 
-COPY . .
+# add `/home/aarti/rogers/node_modules/.bin` to $PATH
+ENV PATH /home/aarti/rogers/node_modules/.bin:$PATH
 
-COPY package.json ./
-
-COPY uid_entrypoint.sh /usr/local/bin/
-
+# install and cache app dependencies
+COPY package.json /home/aarti/rogers/package.json
 RUN npm install
-
 RUN npm install -g @angular/cli@7.3.9
 
-RUN npm run build --prod
 
-ENTRYPOINT [ "sh", "-c", "/usr/local/bin/uid_entrypoint.sh" ]
+# add app
+COPY . /home/aarti/rogers 
 
-FROM nginx:stable
-
-RUN sed -i.bak 's/listen\(.*\)80;/listen 8091;/' /etc/nginx/conf.d/default.conf
-
-
+# start app
+CMD ng serve --host 0.0.0.0
 
 EXPOSE 8091
-
-RUN sed -i.bak 's/^user/#user/' /etc/nginx/nginx.conf
-
-CMD ["nginx", "-g", "daemon off;"]
